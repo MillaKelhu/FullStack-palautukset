@@ -1,10 +1,10 @@
-Tästä kansiosta löytyvät seuraavat tehtävät:
+Tästä hakemistosta löytyvät seuraavat tehtävät:
 
-### kurssitiedot
-Osan 1 tehtävät 1.1-1.5
+Kansio _kurssitiedot_:
+Osan 1 tehtävien 1.1-1.5 react-koodi
 
-### unicafe
-Osan 1 tehtävät 1.6-1.11
+Kansio _unicafe_:
+Osan 1 tehtävien 1.6-1.11 react-koodi
 
-### anekdootit
-Osan 1 tehtävät 1.12-1.14
+Kansio _anekdootit_:
+Osan 1 tehtävien 1.12-1.14 react-koodi
