@@ -1,4 +1,6 @@
 import React, { useState } from 'react'
+import Persons from './components/Persons'
+import PersonQuery from './components/PersonQuery'
 
 const App = () => {
   const [persons, setPersons] = useState([
@@ -59,6 +61,12 @@ const App = () => {
     setNewSearch(event.target.value)
   }
 
+  const queries = [
+    { name: 'name', value: newName, handler: handleNewName },
+    { name: 'number', value: newNumber, handler: handleNewNumber}
+  ]
+
+
   return (
     <div>
       <h1>Phonebook</h1>
@@ -71,24 +79,14 @@ const App = () => {
       </form>
       <h2>Add a new contact</h2>
       <form onSubmit={addPerson}>
-        <div>
-          name: <input 
-          value={newName}
-          onChange={handleNewName}/>
-        </div>
-        <div>
-          number: <input
-          value={newNumber}
-          onChange={handleNewNumber}/>
-        </div>
+        {queries.map(query =>
+          <PersonQuery key={query.name} query={query}/>)}
         <div>
           <button type="submit">add</button>
         </div>
       </form>
       <h2>Numbers</h2>
-      {personsToShow.map(person =>
-        <p key={person.name}>{person.name} {person.number}</p>
-      )}
+      {<Persons persons={personsToShow}/>}
     </div>
   )
 
