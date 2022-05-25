@@ -6,6 +6,7 @@ import SearchResult from './components/SearchResult'
 const App = () => {
   const [ newSearch, setNewSearch ] = useState('')
   const [ countries, setCountries ] = useState([])
+  const [ countriesToShow, setCountriesToShow ] = useState([])
 
   const hook = () => {
     console.log('hook')
@@ -19,16 +20,21 @@ const App = () => {
 
   useEffect(hook, [])
 
-  console.log('render', countries.length, 'countries')
+  console.log('fetched', countries.length, 'countries')
+  console.log('render', countriesToShow.length, 'countries')
 
   const searchCountries = (event) => {
     console.log(event.target.value)
     setNewSearch(event.target.value)
+    setCountriesToShow(countries.filter(country =>
+      country.name.toLowerCase().includes(event.target.value.toLowerCase())
+    ))
   }
 
-  const countriesToShow = countries.filter(country =>
-    country.name.toLowerCase().includes(newSearch.toLowerCase())
-  )
+  function handleShow(country) {
+    console.log(country.name, 'button clicked')
+    setCountriesToShow([country])
+  }
 
   return (
     <div>
@@ -38,7 +44,7 @@ const App = () => {
         value={newSearch}
         onChange={searchCountries}/>
       </form>
-      {<SearchResult matches={countriesToShow}/>}
+      {<SearchResult matches={countriesToShow} handleShow={handleShow}/>}
     </div> 
   )
 }
