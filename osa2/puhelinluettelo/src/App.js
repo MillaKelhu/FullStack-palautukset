@@ -36,9 +36,13 @@ const App = () => {
     console.log('No number duplicates:', notNumDuplicate)
 
     if (notNameDuplicate && notNumDuplicate ) {
-      setPersons(persons.concat(personObject))
-      setNewName('')
-      setNewNumber('')
+      axios
+        .post('http://localhost:3001/persons', personObject)
+        .then(response => {
+          setPersons(persons.concat(response.data))
+          setNewName('')
+          setNewNumber('')
+        })
       console.log('Name', newName, 'added')
       console.log('Name', newNumber, 'added')
     } else if (notNameDuplicate === false) {
