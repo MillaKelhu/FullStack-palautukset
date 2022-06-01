@@ -9,7 +9,7 @@ const App = () => {
   const [ newNumber, setNewNumber ] = useState('')
   const [ newSearch, setNewSearch ] = useState('')
 
-  useEffect(() => {
+  const hook = () => {
     console.log('effect is being used')
     personService
       .getAll()
@@ -17,7 +17,9 @@ const App = () => {
         console.log('persons fetched')
         setPersons(initialPersons)
       })
-  }, [])
+  }
+
+  useEffect(hook, [])
   console.log('render', persons.length, 'persons')
 
   const addPerson = (event) => {
@@ -77,6 +79,17 @@ const App = () => {
     { name: 'number', value: newNumber, handler: handleNewNumber}
   ]
 
+  const deletePerson = (person) => {
+    const confirmation = window.confirm(`Delete ${person.name}?`)
+    if (confirmation) {
+      console.log(`Delete person ${person.id}`)
+      personService
+        .deleteObject(person.id)
+        .then(hook)
+    } else {
+      console.log('Delete no one')
+    }
+  }
 
   return (
     <div>
@@ -97,7 +110,9 @@ const App = () => {
         </div>
       </form>
       <h2>Numbers</h2>
-      {<Persons persons={personsToShow}/>}
+      {<Persons
+        persons={personsToShow}
+        deletePerson={deletePerson}/>}
     </div>
   )
 

@@ -15,9 +15,13 @@ const addNew = (newObject) => {
     return handleRequest(request)
 }
 
-
+const deleteObject = (id) => {
+    const request = axios.delete(`${baseUrl}/${id}`)
+    return handleRequest(request)
+}
 
 export default {
     getAll,
-    addNew
+    addNew,
+    deleteObject
 }
