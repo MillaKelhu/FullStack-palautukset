@@ -48,7 +48,8 @@ const App = () => {
       console.log('Name', newNumber, 'added')
     } else if (notNameDuplicate === false) {
       console.log('Name', newName, 'is a duplicate')
-      window.alert(`${newName} is already added to the phonebook`)
+      const duplicate = findDuplicate(newName)
+      updateNumber(duplicate, newNumber)
     } else {
       console.log('Number', newNumber, 'is a duplicate')
       window.alert(`${newNumber} is already added to the phonebook`)
@@ -63,6 +64,29 @@ const App = () => {
   const handleNewNumber = (event) => {
     console.log(event.target.value)
     setNewNumber(event.target.value)
+  }
+
+  const findDuplicate = (name) => {
+    const duplicate = persons.find(p => p.name === name)
+    return duplicate
+  }
+
+  const updateNumber = (person, newNumber) => {
+    console.log(`update number of ${person.id}`)
+    const confirmation = window.confirm(`${person.name} is already added to phonebook, replace the old number with a new one?`)
+    if (confirmation) {
+      console.log(`update number of ${person.id}`)
+      const updatedPerson = {...person, number: newNumber}
+      personService
+        .update(person.id, updatedPerson)
+        .then(returnedPerson => {
+          setPersons(persons.map(p => p.id !== person.id ? p : returnedPerson))
+          setNewName('')
+          setNewNumber('')
+        })
+    } else {
+      console.log(`don't update anything`)
+    }
   }
 
   const personsToShow = persons.filter(person => 

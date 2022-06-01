@@ -20,8 +20,14 @@ const deleteObject = (id) => {
     return handleRequest(request)
 }
 
+const update = (id, newObject) => {
+    const request = axios.put(`${baseUrl}/${id}`, newObject)
+    return handleRequest(request)
+}
+
 export default {
     getAll,
     addNew,
-    deleteObject
+    deleteObject,
+    update
 }
