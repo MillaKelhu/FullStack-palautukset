@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import axios from 'axios'
+import personService from './services/persons'
 import Persons from './components/Persons'
 import PersonQuery from './components/PersonQuery'
 
@@ -9,16 +9,15 @@ const App = () => {
   const [ newNumber, setNewNumber ] = useState('')
   const [ newSearch, setNewSearch ] = useState('')
 
-  const hook = () => {
+  useEffect(() => {
     console.log('effect is being used')
-    axios
-      .get('http://localhost:3001/persons')
-      .then(response => {
+    personService
+      .getAll()
+      .then(initialPersons => {
         console.log('persons fetched')
-        setPersons(response.data)
+        setPersons(initialPersons)
       })
-  }
-  useEffect(hook, [])
+  }, [])
   console.log('render', persons.length, 'persons')
 
   const addPerson = (event) => {
@@ -36,10 +35,10 @@ const App = () => {
     console.log('No number duplicates:', notNumDuplicate)
 
     if (notNameDuplicate && notNumDuplicate ) {
-      axios
-        .post('http://localhost:3001/persons', personObject)
-        .then(response => {
-          setPersons(persons.concat(response.data))
+      personService
+        .addNew(personObject)
+        .then(returnedPerson => {
+          setPersons(persons.concat(returnedPerson))
           setNewName('')
           setNewNumber('')
         })
