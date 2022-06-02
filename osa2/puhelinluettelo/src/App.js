@@ -2,12 +2,14 @@ import React, { useState, useEffect } from 'react'
 import personService from './services/persons'
 import Persons from './components/Persons'
 import PersonQuery from './components/PersonQuery'
+import Message from './components/Message'
 
 const App = () => {
   const [persons, setPersons] = useState([])
   const [ newName, setNewName ] = useState('')
   const [ newNumber, setNewNumber ] = useState('')
   const [ newSearch, setNewSearch ] = useState('')
+  const [ newMessage, setNewMessage ] = useState(null)
 
   const hook = () => {
     console.log('effect is being used')
@@ -22,13 +24,9 @@ const App = () => {
   useEffect(hook, [])
   console.log('render', persons.length, 'persons')
 
-  const addPerson = (event) => {
+  const newInformation = (event) => {
     event.preventDefault()
     console.log('submit clicked', event.target)
-    const personObject = {
-      name: newName,
-      number: newNumber
-    }
 
     const notNameDuplicate = persons.every((person) => newName !== person.name)
     console.log('No name duplicates:', notNameDuplicate)
@@ -37,23 +35,30 @@ const App = () => {
     console.log('No number duplicates:', notNumDuplicate)
 
     if (notNameDuplicate && notNumDuplicate ) {
-      personService
+      addPerson()
+    } else if (notNameDuplicate === false) {
+      console.log('Name', newName, 'is a duplicate')
+      updateNumber()
+    } else {
+      console.log('Number', newNumber, 'is a duplicate')
+      window.alert(`${newNumber} is already added to the phonebook`)
+    }
+  }
+
+  const addPerson = () => {
+    const personObject = {
+      name: newName,
+      number: newNumber
+    }
+    personService
         .addNew(personObject)
         .then(returnedPerson => {
           setPersons(persons.concat(returnedPerson))
           setNewName('')
           setNewNumber('')
         })
-      console.log('Name', newName, 'added')
-      console.log('Name', newNumber, 'added')
-    } else if (notNameDuplicate === false) {
-      console.log('Name', newName, 'is a duplicate')
-      const duplicate = findDuplicate(newName)
-      updateNumber(duplicate, newNumber)
-    } else {
-      console.log('Number', newNumber, 'is a duplicate')
-      window.alert(`${newNumber} is already added to the phonebook`)
-    }
+      setNewMessage(`Added ${newName}`)
+      messageTimer()
   }
 
   const handleNewName = (event) => {
@@ -66,12 +71,8 @@ const App = () => {
     setNewNumber(event.target.value)
   }
 
-  const findDuplicate = (name) => {
-    const duplicate = persons.find(p => p.name === name)
-    return duplicate
-  }
-
-  const updateNumber = (person, newNumber) => {
+  const updateNumber = () => {
+    const person = persons.find(p => p.name === newName)
     console.log(`update number of ${person.id}`)
     const confirmation = window.confirm(`${person.name} is already added to phonebook, replace the old number with a new one?`)
     if (confirmation) {
@@ -84,6 +85,8 @@ const App = () => {
           setNewName('')
           setNewNumber('')
         })
+      setNewMessage(`Updated ${person.name}'s number`)
+      messageTimer()
     } else {
       console.log(`don't update anything`)
     }
@@ -110,14 +113,21 @@ const App = () => {
       personService
         .deleteObject(person.id)
         .then(hook)
+      setNewMessage(`Deleted ${person.name}`)
+      messageTimer()
     } else {
       console.log('Delete no one')
     }
   }
 
+  const messageTimer = () => {
+    setTimeout(() => setNewMessage(null), 3000)
+  }
+
   return (
     <div>
       <h1>Phonebook</h1>
+      <Message message={newMessage}/>
       <form>
         show names with 
         <input
@@ -126,7 +136,7 @@ const App = () => {
         />
       </form>
       <h2>Add a new contact</h2>
-      <form onSubmit={addPerson}>
+      <form onSubmit={newInformation}>
         {queries.map(query =>
           <PersonQuery key={query.name} query={query}/>)}
         <div>
