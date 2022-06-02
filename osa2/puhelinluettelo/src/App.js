@@ -3,6 +3,7 @@ import personService from './services/persons'
 import Persons from './components/Persons'
 import PersonQuery from './components/PersonQuery'
 import Message from './components/Message'
+import ErrorMessage from './components/ErrorMessage'
 
 const App = () => {
   const [persons, setPersons] = useState([])
@@ -10,6 +11,7 @@ const App = () => {
   const [ newNumber, setNewNumber ] = useState('')
   const [ newSearch, setNewSearch ] = useState('')
   const [ newMessage, setNewMessage ] = useState(null)
+  const [ newErrorMessage, setNewErrorMessage ] = useState(null)
 
   const hook = () => {
     console.log('effect is being used')
@@ -72,10 +74,9 @@ const App = () => {
   }
 
   const updateNumber = () => {
-    const person = persons.find(p => p.name === newName)
-    console.log(`update number of ${person.id}`)
-    const confirmation = window.confirm(`${person.name} is already added to phonebook, replace the old number with a new one?`)
+    const confirmation = window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)
     if (confirmation) {
+      const person = persons.find(p => p.name === newName)
       console.log(`update number of ${person.id}`)
       const updatedPerson = {...person, number: newNumber}
       personService
@@ -84,9 +85,16 @@ const App = () => {
           setPersons(persons.map(p => p.id !== person.id ? p : returnedPerson))
           setNewName('')
           setNewNumber('')
+          setNewMessage(`Updated ${person.name}'s number`)
+          messageTimer()
         })
-      setNewMessage(`Updated ${person.name}'s number`)
-      messageTimer()
+        .catch(error => {
+          setNewErrorMessage(
+            `Information of ${newName} has already been removed from the server`
+          )
+          errorMessageTimer()
+        })
+        .then(hook)
     } else {
       console.log(`don't update anything`)
     }
@@ -124,10 +132,15 @@ const App = () => {
     setTimeout(() => setNewMessage(null), 3000)
   }
 
+  const errorMessageTimer = () => {
+    setTimeout(() => setNewErrorMessage(null), 3000)
+  }
+
   return (
     <div>
       <h1>Phonebook</h1>
       <Message message={newMessage}/>
+      <ErrorMessage message={newErrorMessage}/>
       <form>
         show names with 
         <input
