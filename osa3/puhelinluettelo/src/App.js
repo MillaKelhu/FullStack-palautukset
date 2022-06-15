@@ -60,8 +60,10 @@ const App = () => {
           messageTimer()
         })
         .catch(error => {
+          console.log(error.response.data)
+          const errorMessage = error.response.data.error
           setNewErrorMessage(
-            `Name or number is missing`
+            errorMessage
           )
           errorMessageTimer()
         })
