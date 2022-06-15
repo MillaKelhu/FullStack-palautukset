@@ -95,8 +95,11 @@ const App = () => {
           messageTimer()
         })
         .catch(error => {
+          console.log(`Error:`)
+          console.log(error.response.data)
+          const errorMessage = error.response.data.error || `Information of ${newName} has already been removed from the server`
           setNewErrorMessage(
-            `Information of ${newName} has already been removed from the server`
+            errorMessage
           )
           errorMessageTimer()
         })
