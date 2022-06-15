@@ -139,7 +139,7 @@ const App = () => {
   }
 
   const errorMessageTimer = () => {
-    setTimeout(() => setNewErrorMessage(null), 3000)
+    setTimeout(() => setNewErrorMessage(null), 5000)
   }
 
   return (
